@@ -1,0 +1,40 @@
+workflows:
+  macos-universal-dmg:
+    name: CA Control — Universal DMG
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 20
+      xcode: latest
+      vars:
+        CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    scripts:
+      - name: Toolchain
+        script: |
+          set -x
+          uname -a
+          sw_vers
+          xcrun swiftc --version
+          csrutil status || true
+      - name: Install
+        script: npm install
+      - name: Unit tests
+        script: npm test
+      - name: Filter checks
+        script: /bin/sh scripts/check-filter.sh
+      - name: Build Universal DMG
+        script: npm run build
+      - name: Verify universal
+        script: |
+          lipo -archs build/ca-local-services
+          ls -la dist
+    artifacts:
+      - dist/**/*.dmg
+      - dist/**/*.blockmap
+      - dist/**/*.yml
