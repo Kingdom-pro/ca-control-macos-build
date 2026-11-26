@@ -16,7 +16,7 @@ async function main() {
   });
   const universal = path.join(output, 'ca-local-services');
   execFileSync('/usr/bin/xcrun', ['lipo', '-create', ...binaries, '-output', universal], { stdio: 'inherit' });
-  execFileSync('/usr/bin/xcrun', ['lipo', '-verify_arch', 'arm64', 'x86_64', universal], { stdio: 'inherit' });
+  execFileSync('/usr/bin/xcrun', ['lipo', universal, '-verify_arch', 'arm64', 'x86_64'], { stdio: 'inherit' });
 
   const { build, Platform, Arch } = require('electron-builder');
   await build({ projectDir: project, targets: Platform.MAC.createTarget(['dmg'], Arch.universal) });
