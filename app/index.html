@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>CA Control</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mac.css">
+  <script src="renderer.js" defer></script>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><i class="ambient-a"></i><i class="ambient-b"></i></div>
+  <div class="shell">
+    <header class="titlebar">
+      <div class="brand"><img width="20" height="20" src="ca-control.svg" alt=""><span>CA Control</span></div>
+      <div class="titlebar-meta"><span class="meta-chip" id="profile-status">Читаем профиль</span></div>
+    </header>
+    <main>
+      <div class="topbar">
+        <nav class="switcher" aria-label="Разделы">
+          <button type="button" data-view="overview" aria-controls="overview" aria-current="page">Обзор</button>
+          <button type="button" data-view="settings" aria-controls="settings">Параметры</button>
+          <button type="button" data-view="journal" aria-controls="journal">Журнал</button>
+        </nav>
+      </div>
+
+      <section id="overview" class="view" aria-labelledby="overview-title">
+        <h1 id="overview-title" class="visually-hidden">Обзор</h1>
+        <div class="widgets">
+          <article class="widget tunnel w" data-phase="unknown">
+            <div class="w-rim" aria-hidden="true"></div><div class="w-glow" aria-hidden="true"></div><div class="w-scrim" aria-hidden="true"></div>
+            <div class="w-body">
+              <header class="widget-title"><h2>Проверка прокси</h2></header>
+              <div class="hero-block">
+                <p class="readout tabular" id="exit-ip">—</p>
+                <p class="secondary">Выходной IP прокси</p>
+                <p class="detail" id="profile-detail">Добавьте прокси для проверки подключения.</p>
+              </div>
+              <footer class="card-footer">
+                <button class="primary" id="check-profile" type="button">Настроить прокси</button>
+              </footer>
+            </div>
+          </article>
+          <article class="widget claude w">
+            <div class="w-rim" aria-hidden="true"></div><div class="w-glow" aria-hidden="true"></div><div class="w-scrim" aria-hidden="true"></div>
+            <div class="w-body">
+              <header class="widget-title"><h2>Claude Desktop</h2></header>
+              <div class="hero-block"><p class="readout">Защита недоступна</p>
+                <p class="detail">Kill Switch появится после проверки системного расширения в macOS.</p></div>
+            </div>
+          </article>
+          <article class="widget route w">
+            <div class="w-rim" aria-hidden="true"></div><div class="w-scrim" aria-hidden="true"></div>
+            <div class="w-body">
+              <header class="widget-title"><h2>Маршрут</h2><span class="tag-subtle" id="uplink">Тип сети не определён</span></header>
+              <dl class="metrics">
+                <div class="metric-cell"><dt>Подключение macOS</dt><dd>Обычная сеть</dd></div>
+                <div class="metric-cell"><dt>Системный туннель</dt><dd>Недоступен</dd></div>
+              </dl>
+            </div>
+          </article>
+          <article class="widget network w">
+            <div class="w-rim" aria-hidden="true"></div><div class="w-glow" aria-hidden="true"></div><div class="w-scrim" aria-hidden="true"></div>
+            <div class="w-body">
+              <header class="widget-title"><h2>Подключение</h2></header>
+              <dl class="metrics">
+                <div class="metric-cell"><dt>Адрес прокси</dt><dd class="mono" id="proxy-address">—</dd></div>
+                <div class="metric-cell"><dt>Ожидаемый IP</dt><dd class="mono" id="expected-ip">—</dd></div>
+              </dl>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="settings" class="view" aria-labelledby="settings-title" hidden>
+        <div class="section-head"><h1 id="settings-title">Параметры</h1></div>
+        <article class="widget network w">
+          <div class="w-rim" aria-hidden="true"></div><div class="w-scrim" aria-hidden="true"></div>
+          <form id="proxy-form" class="w-body">
+            <header class="widget-title"><h2>Прокси</h2></header>
+            <div class="settings-list">
+              <div class="settings-row"><label for="endpoint">Адрес и порт</label><input id="endpoint" type="text" placeholder="socks5://192.0.2.10:1080" maxlength="320" required spellcheck="false"></div>
+              <div class="settings-row"><label for="username">Логин</label><input id="username" type="text" maxlength="255" autocomplete="off" spellcheck="false"></div>
+              <div class="settings-row"><label for="password">Пароль</label><input id="password" type="password" maxlength="1024" autocomplete="new-password"></div>
+              <div class="settings-row"><label for="expected">Ожидаемый IP <span class="detail">по желанию</span></label><input id="expected" type="text" maxlength="45" spellcheck="false"></div>
+            </div>
+            <footer class="card-footer"><button class="primary" id="save-profile" type="submit">Проверить и сохранить</button></footer>
+            <p class="detail" id="storage-note">Пароль хранится в Связке ключей macOS.</p>
+          </form>
+        </article>
+      </section>
+
+      <section id="journal" class="view view-journal" aria-labelledby="journal-title" hidden>
+        <article class="log-panel">
+          <header class="log-panel-head"><h2 id="journal-title">Журнал проверок</h2></header>
+          <div class="log-panel-body"><pre id="log" tabindex="0" aria-labelledby="journal-title">Записей пока нет</pre></div>
+        </article>
+      </section>
+      <p id="notice" class="notice" role="status" hidden></p>
+    </main>
+  </div>
+</body>
+</html>
