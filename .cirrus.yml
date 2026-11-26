@@ -1,0 +1,23 @@
+task:
+  name: macos-universal-dmg
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-sonoma-xcode:latest
+  env:
+    CSC_IDENTITY_AUTO_DISCOVERY: "false"
+  node_install_script:
+    - brew list node@20 >/dev/null 2>&1 || brew install node@20
+  install_script:
+    - export PATH="$(brew --prefix node@20)/bin:$PATH"
+    - node -v
+    - npm install
+  test_script:
+    - export PATH="$(brew --prefix node@20)/bin:$PATH"
+    - npm test
+  build_script:
+    - export PATH="$(brew --prefix node@20)/bin:$PATH"
+    - xcrun swiftc --version
+    - csrutil status || true
+    - node scripts/build.cjs
+  dmg_artifacts:
+    path: "dist/*.dmg"
+    type: application/octet-stream
