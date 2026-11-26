@@ -38,7 +38,8 @@ static NSString *signingIdentifier(NSData *token) {
 
 - (NEFilterNewFlowVerdict *)handleNewFlow:(NEFilterFlow *)flow {
     NSString *host = flow.URL.host;
-    if (ca_filter_blocks(flow.sourceAppIdentifier.UTF8String, NULL, host.UTF8String)) {
+    NSString *application = signingIdentifier(flow.sourceAppAuditToken);
+    if (ca_filter_blocks(application.UTF8String, NULL, host.UTF8String)) {
         return [NEFilterNewFlowVerdict dropVerdict];
     }
     if ([flow isKindOfClass:NEFilterSocketFlow.class]) {
@@ -47,9 +48,6 @@ static NSString *signingIdentifier(NSData *token) {
             return [NEFilterNewFlowVerdict dropVerdict];
         }
     }
-
-    NSString *application = signingIdentifier(flow.sourceAppAuditToken);
-    if (ca_filter_blocks(application.UTF8String, NULL, NULL)) return [NEFilterNewFlowVerdict dropVerdict];
     if (@available(macOS 13.0, *)) {
         NSData *processToken = flow.sourceProcessAuditToken;
         NSString *process = [processToken isEqual:flow.sourceAppAuditToken] ? nil : signingIdentifier(processToken);
